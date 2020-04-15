@@ -63,7 +63,7 @@ const EditProductScreen = props => {
         });
 
     const submitHandler = useCallback(() => {
-        if (!titleIsValid) {
+        if (!formState.formIsValid) {
             Alert.alert(`Wrong Input!`, `Please check the errors in the form.`, [{text:'OK'}]);
             return;
         };
@@ -71,22 +71,22 @@ const EditProductScreen = props => {
         if(editedProduct) {
             dispatch(productsActions.updateProduct(
                 prodId,
-                title,
-                description,
-                imageUrl
+                formState.inputValues.title,
+                formState.inputValues.description,
+                formState.inputValues.imageUrl
             ));
         } else {
             dispatch(productsActions.createProduct(
-                    title, 
-                    description, 
-                    imageUrl, 
-                    +price
+                formState.inputValues.title, 
+                formState.inputValues.description, 
+                formState.inputValues.imageUrl, 
+                +formState.inputValues.price
                 )
             );
         }
         props.navigation.goBack();
 
-    }, [dispatch, prodId, title, description, imageUrl, price, titleIsValid]);
+    }, [dispatch, prodId, formState]);
 
     useEffect(() => {
         props.navigation.setOptions({
@@ -123,7 +123,7 @@ const EditProductScreen = props => {
                     <Text style={styles.label}>Title</Text>
                     <TextInput 
                     style={styles.input} 
-                    value={title} 
+                    value={formState.inputValues.title} 
                     onChangeText={textChangeHandler.bind(this, 'title')}
                     keyboardType='default'
                     autoCorrect
@@ -131,19 +131,19 @@ const EditProductScreen = props => {
                     returnKeyType="next"
                     />
                 </View>
-                {!titleIsValid && <Text>Please enter a valid title!</Text>}
+                {!formState.inputValidities.title && <Text>Please enter a valid title!</Text>}
                 <View style={styles.formControl}>
                     <Text style={styles.label}>Image Url</Text>
                     <TextInput 
                         style={styles.input} 
-                        value={imageUrl} 
+                        value={formState.inputValues.imageUrl} 
                         onChangeText={textChangeHandler.bind(this, 'imageUrl')}/>
                 </View>
                 {editedProduct ? null : (<View style={styles.formControl}>
                     <Text style={styles.label}>Price</Text>
                     <TextInput 
                         style={styles.input} 
-                        value={price} 
+                        value={formState.inputValues.price} 
                         onChangeText={textChangeHandler.bind(this, 'price')}
                         keyboardType="decimal-pad"
                         />
@@ -152,7 +152,7 @@ const EditProductScreen = props => {
                     <Text style={styles.label}>Description</Text>
                     <TextInput 
                         style={styles.input} 
-                        value={description} 
+                        value={formState.inputValues.description} 
                         onChangeText={textChangeHandler.bind(this, 'description')}/>
                 </View>
             </View>
